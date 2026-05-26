@@ -5,8 +5,8 @@
       "destination": "/community.html"
     },
     {
-      "source": "/goon",
-      "destination": "https://www.youtube.com/watch?v=mulpkQaF87E"
+      "source": "/invite",
+      "destination": "https://discord.gg/AN6RkmNNJQ"
     },
     {
       "source": "/(.*)",
