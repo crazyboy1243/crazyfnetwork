@@ -3,39 +3,160 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Embedded Video</title>
+    <title>Click Game</title>
     <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: Arial, sans-serif;
+            background: #1a1a2e;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            margin: 0;
-            background-color: #f0f0f0;
+            font-family: 'Arial Black', sans-serif;
+            overflow: hidden;
         }
-        .video-container {
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            background-color: #000;
-            line-height: 0;
+        #game {
+            text-align: center;
+            user-select: none;
+        }
+        #title {
+            color: #e94560;
+            font-size: 2rem;
+            margin-bottom: 10px;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+        }
+        #subtitle {
+            color: #aaa;
+            font-size: 0.9rem;
+            margin-bottom: 40px;
+            letter-spacing: 2px;
+        }
+        #btn {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 35% 35%, #e94560, #900);
+            border: 4px solid #e94560;
+            cursor: pointer;
+            box-shadow: 0 0 30px #e9456088, 0 0 60px #e9456044;
+            transition: transform 0.1s, box-shadow 0.1s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 30px;
+            position: relative;
+        }
+        #btn:active { transform: scale(0.92); box-shadow: 0 0 10px #e9456088; }
+        #btn-label {
+            color: #fff;
+            font-size: 1rem;
+            letter-spacing: 2px;
+            pointer-events: none;
+        }
+        #counter-wrap {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+        .dot {
+            width: 20px; height: 20px;
+            border-radius: 50%;
+            border: 2px solid #e94560;
+            background: transparent;
+            transition: background 0.2s, transform 0.2s;
+        }
+        .dot.filled {
+            background: #e94560;
+            transform: scale(1.3);
+            box-shadow: 0 0 8px #e94560;
+        }
+        #hint {
+            color: #555;
+            font-size: 0.75rem;
+            letter-spacing: 1px;
+        }
+        #video-wrap {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: #000;
+            z-index: 999;
+        }
+        video {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+        .burst {
+            position: fixed;
+            width: 12px; height: 12px;
+            border-radius: 50%;
+            background: #e94560;
+            pointer-events: none;
+            animation: burst 0.6s ease-out forwards;
+        }
+        @keyframes burst {
+            to { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
         }
     </style>
 </head>
 <body>
-
-    <div class="video-container">
-        <!-- FIXED: URL updated to the official ://youtube.com format -->
-        <iframe 
-          width="560" 
-          height="315" 
-          src="https://www.youtube.com/watch?v=xvFZjo5PgG0" 
-          title="YouTube video player" 
-          frameborder="0" 
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-          referrerpolicy="strict-origin-when-cross-origin" 
-          allowfullscreen>
-        </iframe>
+    <div id="game">
+        <div id="title">CLICK IT</div>
+        <div id="subtitle">4 CLICKS TO UNLOCK</div>
+        <div id="btn"><span id="btn-label">CLICK</span></div>
+        <div id="counter-wrap">
+            <div class="dot" id="d0"></div>
+            <div class="dot" id="d1"></div>
+            <div class="dot" id="d2"></div>
+            <div class="dot" id="d3"></div>
+        </div>
+        <div id="hint">don't stop now...</div>
     </div>
 
+    <div id="video-wrap">
+        <video id="vid" src="https://crazyfilmsnetwork.com/roll.mp4" controls playsinline></video>
+    </div>
+
+    <script>
+        let clicks = 0;
+        const btn = document.getElementById('btn');
+        const hints = ["don't stop now...", "keep going...", "almost there...", "ONE MORE!!!"];
+
+        btn.addEventListener('click', e => {
+            spawnParticles(e.clientX, e.clientY);
+            document.getElementById(`d${clicks}`).classList.add('filled');
+            clicks++;
+            document.getElementById('hint').textContent = hints[clicks - 1] || '';
+
+            if (clicks >= 4) {
+                setTimeout(() => {
+                    const wrap = document.getElementById('video-wrap');
+                    const vid = document.getElementById('vid');
+                    wrap.style.display = 'block';
+                    vid.play();
+                    if (wrap.requestFullscreen) wrap.requestFullscreen();
+                    else if (wrap.webkitRequestFullscreen) wrap.webkitRequestFullscreen();
+                }, 300);
+            }
+        });
+
+        function spawnParticles(x, y) {
+            for (let i = 0; i < 8; i++) {
+                const p = document.createElement('div');
+                p.className = 'burst';
+                p.style.left = x + 'px';
+                p.style.top = y + 'px';
+                const angle = (i / 8) * Math.PI * 2;
+                const dist = 40 + Math.random() * 40;
+                p.style.setProperty('--tx', Math.cos(angle) * dist + 'px');
+                p.style.setProperty('--ty', Math.sin(angle) * dist + 'px');
+                document.body.appendChild(p);
+                setTimeout(() => p.remove(), 600);
+            }
+        }
+    </script>
 </body>
 </html>
