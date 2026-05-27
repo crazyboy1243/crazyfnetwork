@@ -128,11 +128,14 @@
 
         document.getElementById('reenter-btn').addEventListener('click', () => {
             reenter.style.display = 'none';
+            vid.currentTime = 0;
+            vid.play();
             goFullscreen();
         });
 
         document.addEventListener('fullscreenchange', () => {
             if (!document.fullscreenElement && unlocked) {
+                vid.pause();
                 reenter.style.display = 'flex';
             }
         });
