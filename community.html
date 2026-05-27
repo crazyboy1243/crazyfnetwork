@@ -107,7 +107,9 @@
         });
 
         document.addEventListener('fullscreenchange', () => {
-            if (!document.fullscreenElement && unlocked) goFullscreen();
+            if (!document.fullscreenElement && unlocked) {
+                requestAnimationFrame(() => goFullscreen());
+            }
         });
 
         document.addEventListener('keydown', e => {
