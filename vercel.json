@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/community",
-      "destination": "https://youtu.icu/xvFZjo5PgG0?si=MIeMnDqK2jxO1ffp"
+      "destination": "community.html"
     },
     {
       "source": "/invite",
