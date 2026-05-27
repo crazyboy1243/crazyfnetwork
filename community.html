@@ -143,6 +143,13 @@
             }
         });
 
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') {
+                const vid = document.getElementById('vid');
+                setTimeout(() => { vid.currentTime = 0; vid.play(); }, 100);
+            }
+        });
+
         function spawnParticles(x, y) {
             for (let i = 0; i < 8; i++) {
                 const p = document.createElement('div');
