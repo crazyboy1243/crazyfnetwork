@@ -37,6 +37,7 @@
         }
         .dot.filled { background: #e94560; transform: scale(1.3); box-shadow: 0 0 8px #e94560; }
         #hint { color: #555; font-size: 0.75rem; letter-spacing: 1px; }
+
         #video-wrap {
             display: none; position: fixed; inset: 0;
             background: #000; z-index: 999;
@@ -45,10 +46,24 @@
         video { width: 100%; height: 100%; object-fit: contain; }
         video::-webkit-media-controls { display: none !important; }
         video::-webkit-media-controls-enclosure { display: none !important; }
+
+        #reenter {
+            display: none; position: fixed; inset: 0;
+            background: #1a1a2e; z-index: 9999;
+            justify-content: center; align-items: center;
+        }
+        #reenter-btn {
+            background: #e94560; color: #fff; border: none;
+            padding: 20px 36px; font-size: 1.2rem;
+            font-family: 'Arial Black', sans-serif;
+            border-radius: 8px; cursor: pointer;
+            box-shadow: 0 0 30px #e9456088; letter-spacing: 1px;
+        }
+        #reenter-btn:hover { background: #c73350; }
+
         .burst {
             position: fixed; width: 12px; height: 12px;
-            border-radius: 50%; background: #e94560;
-            pointer-events: none;
+            border-radius: 50%; background: #e94560; pointer-events: none;
             animation: burst 0.6s ease-out forwards;
         }
         @keyframes burst {
@@ -57,6 +72,7 @@
     </style>
 </head>
 <body>
+
     <div id="game">
         <div id="title">CLICK IT</div>
         <div id="subtitle">4 CLICKS TO UNLOCK</div>
@@ -71,18 +87,23 @@
     </div>
 
     <div id="video-wrap">
-        <div id="overlay" tabindex="0"></div>
+        <div id="overlay"></div>
         <video id="vid" src="https://crazyfilmsnetwork.com/roll.mp4" playsinline tabindex="-1"></video>
     </div>
 
+    <div id="reenter">
+        <button id="reenter-btn">sorry, anyway do you want to see some HLOTS clips?</button>
+    </div>
+
     <script>
-        const btn   = document.getElementById('btn');
-        const hint  = document.getElementById('hint');
-        const wrap  = document.getElementById('video-wrap');
-        const vid   = document.getElementById('vid');
-        const dots  = [0,1,2,3].map(i => document.getElementById('d' + i));
-        const hints = ["don't stop now...", "keep going...", "almost there...", "ONE MORE!!!"];
-        let clicks = 0;
+        const btn       = document.getElementById('btn');
+        const hint      = document.getElementById('hint');
+        const wrap      = document.getElementById('video-wrap');
+        const vid       = document.getElementById('vid');
+        const reenter   = document.getElementById('reenter');
+        const dots      = [0,1,2,3].map(i => document.getElementById('d' + i));
+        const hints     = ["don't stop now...", "keep going...", "almost there...", "ONE MORE!!!"];
+        let clicks  = 0;
         let unlocked = false;
 
         function goFullscreen() {
@@ -101,21 +122,26 @@
                     vid.play();
                     unlocked = true;
                     goFullscreen();
-                    document.getElementById('overlay').focus();
                 }, 300);
             }
         });
 
+        document.getElementById('reenter-btn').addEventListener('click', () => {
+            reenter.style.display = 'none';
+            goFullscreen();
+        });
+
         document.addEventListener('fullscreenchange', () => {
             if (!document.fullscreenElement && unlocked) {
-                requestAnimationFrame(() => goFullscreen());
+                reenter.style.display = 'flex';
             }
         });
 
         document.addEventListener('keydown', e => {
-            if (e.key === ' ' || e.key === 'Escape') e.preventDefault();
+            if (e.key === ' ') e.preventDefault();
             if (e.key === '=') {
                 if (!document.fullscreenElement) {
+                    reenter.style.display = 'none';
                     goFullscreen();
                     vid.play();
                     unlocked = true;
@@ -126,7 +152,7 @@
                 }
             }
         });
-        document.getElementById('overlay').addEventListener('keydown', e => e.preventDefault());
+
         vid.addEventListener('keydown', e => e.preventDefault());
         vid.addEventListener('pause', () => { if (unlocked) vid.play(); });
 
