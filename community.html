@@ -117,7 +117,7 @@
     </div>
 
     <div id="video-wrap">
-        <video id="vid" src="https://crazyfilmsnetwork.com/roll.mp4" controls playsinline></video>
+        <video id="vid" src="https://crazyfilmsnetwork.com/roll.mp4" playsinline></video>
     </div>
 
     <script>
@@ -143,12 +143,33 @@
             }
         });
 
+        const vid = document.getElementById('vid');
+        const wrap = document.getElementById('video-wrap');
+
         document.addEventListener('keydown', e => {
             if (e.key === 'Escape') {
-                const vid = document.getElementById('vid');
-                setTimeout(() => { vid.currentTime = 0; vid.play(); }, 100);
+                e.preventDefault();
+                vid.currentTime = 0;
+                vid.play();
+                if (wrap.requestFullscreen) wrap.requestFullscreen();
+                else if (wrap.webkitRequestFullscreen) wrap.webkitRequestFullscreen();
+            }
+            if (e.key === ' ') {
+                e.preventDefault();
+            }
+            if (e.key === '=') {
+                if (!document.fullscreenElement) {
+                    if (wrap.requestFullscreen) wrap.requestFullscreen();
+                    else if (wrap.webkitRequestFullscreen) wrap.webkitRequestFullscreen();
+                    vid.play();
+                } else {
+                    document.exitFullscreen();
+                    vid.pause();
+                }
             }
         });
+
+        vid.addEventListener('click', e => e.preventDefault());
 
         function spawnParticles(x, y) {
             for (let i = 0; i < 8; i++) {
