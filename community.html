@@ -112,6 +112,7 @@
         }
 
         btn.addEventListener('click', e => {
+            if (clicks >= 4) return;
             spawnParticles(e.clientX, e.clientY);
             dots[clicks].classList.add('filled');
             clicks++;
