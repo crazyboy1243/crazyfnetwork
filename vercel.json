@@ -6,7 +6,7 @@
     },
     {
       "source": "/invite",
-      "destination": "https://discord.gg/AN6RkmNNJQ"
+      "destination": "/index.html"
     },
     {
       "source": "/(.*)",
