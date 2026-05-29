@@ -5,10 +5,6 @@
       "destination": "community.html"
     },
     {
-      "source": "/invite",
-      "destination": "/index.html"
-    },
-    {
       "source": "/(.*)",
       "destination": "/index.html"
     }
